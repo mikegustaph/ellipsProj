@@ -2,59 +2,49 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\Permission\Traits\HasRoles;
 
 class UserController extends Controller
 {
+    use HasRoles;
+
     public function index()
     {
-        return view('user.index');
+        return view('user.adduser');
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function addview()
     {
+        $user = User::with('roleuser')->get();
+        return view('user.userlist', compact('user'));
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store()
     {
-        //
+        //... code...
     }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show()
+    public function editview($id)
     {
-        //
+        $user = User::find($id);
+        return view('user.edit', compact('user'));
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit()
+    public function delete($id)
     {
-        //
+        $user = User::find($id);
+        if ($user) {
+            $user->delete();
+            return redirect()->back()->with('message', 'User has been deleted successfully!');
+        } else {
+            return redirect()->back()->with('error', 'User not found!');
+        }
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request,)
+    public function permission($id)
     {
-        //
+        $user = User::find($id);
+        return view('role.permission', compact('user'));
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy()
+    public function changepermission(Request $request, $id)
     {
-        //
     }
 }
